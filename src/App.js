@@ -1,28 +1,47 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
+import SeasonDisplay from './components/SeasonDisplay';
+import SpinnerLoader from './components/SpinnerLoader';
 import './App.css';
 
+
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+ constructor(props) {
+    super(props); 
+      this.state = { lat: null, errMessage: '' };
+
+  
+    
+
   }
+    // Gathers Coordinates of the user location 
+  componentDidMount() {
+       window.navigator.geolocation.getCurrentPosition(
+         position => this.setState({ lat: position.coords.latitude}),
+         err =>  this.setState({ errMessage: err.message})
+      );
+  }
+
+
+
+render() {
+
+
+
+          if (this.state.errMessage && !this.state.lat) {
+              return  <div> err: {this.state.errMessage} </div>;
+          }
+
+          if (!this.state.errMessage && this.state.lat) {
+            return <SeasonDisplay lat={this.state.lat} />
+          }
+
+          return <SpinnerLoader message="Please accept the request..." />;
+
+
+
+ }
 }
+
+
 
 export default App;
